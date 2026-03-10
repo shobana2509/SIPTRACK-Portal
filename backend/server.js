@@ -308,6 +308,14 @@ app.get('/api/proof/:filename', (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`SIPCOT Backend running on http://localhost:${PORT}`);
-});
+const { initializeDatabase } = require('./db');
+
+initializeDatabase()
+  .then(() => {
+    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  })
+  .catch((err) => {
+    console.error('❌ Failed to initialize database:', err.message);
+    process.exit(1);
+  });
+
