@@ -61,8 +61,8 @@ export interface TermLoan {
 export interface PowerUsage {
   id: string;
   industryId: string;
-  dailyUsage: number;
   monthlyUsage: number;
+  yearlyUsage: number;
   powerSource: "TNEB" | "Generator" | "Solar";
   connectionNumber: string;
   proofFileName?: string;
@@ -97,8 +97,8 @@ export interface CSR {
 export interface WaterUsage {
   id: string;
   industryId: string;
-  dailyUsage: number;
   monthlyUsage: number;
+  yearlyUsage: number;
   waterSource: "SIPCOT" | "Borewell" | "Both";
   proofFileName?: string;
   proofFileData?: string;

@@ -293,10 +293,10 @@ function mapToCamel(row, tableName) {
 createCrudRoutes('investments', 'investments', ['total_amount', 'investment_date', 'investment_type']);
 createCrudRoutes('employees', 'employees', ['male', 'female']);
 createCrudRoutes('term_loans', 'term-loans', ['loan_amount', 'bank', 'interest_rate', 'tenure', 'emi', 'status']);
-createCrudRoutes('power_usages', 'power-usages', ['daily_usage', 'monthly_usage', 'power_source', 'connection_number']);
+createCrudRoutes('power_usages', 'power-usages', ['monthly_usage', 'yearly_usage', 'power_source', 'connection_number']);
 createCrudRoutes('turnovers', 'turnovers', ['monthly_turnover', 'annual_turnover', 'financial_year']);
 createCrudRoutes('csr_entries', 'csr-entries', ['activity_name', 'description', 'amount_spent', 'activity_date', 'location']);
-createCrudRoutes('water_usages', 'water-usages', ['daily_usage', 'monthly_usage', 'water_source']);
+createCrudRoutes('water_usages', 'water-usages', ['monthly_usage', 'yearly_usage', 'water_source']);
 
 // Download proof file
 app.get('/api/proof/:filename', (req, res) => {

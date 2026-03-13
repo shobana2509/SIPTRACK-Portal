@@ -136,8 +136,8 @@ const SuperAdmin = () => {
         <TabsContent value="investments"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Amount</TableHead><TableHead>Type</TableHead><TableHead>Date</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.inv.map(i => <TableRow key={i.id} className="hover:bg-primary/5"><TableCell className="font-semibold">₹{i.totalAmount.toLocaleString()}</TableCell><TableCell><Badge variant="secondary" className="rounded-full">{i.investmentType}</Badge></TableCell><TableCell>{i.investmentDate}</TableCell><TableCell><ProofLink fileName={i.proofFileName} fileData={i.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{i.updatedDate}</TableCell></TableRow>)}{d.inv.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
         <TabsContent value="employees"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Male</TableHead><TableHead>Female</TableHead><TableHead>Total</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.emp.map(e => <TableRow key={e.id} className="hover:bg-primary/5"><TableCell>{e.male}</TableCell><TableCell>{e.female}</TableCell><TableCell className="font-semibold">{e.male + e.female}</TableCell><TableCell className="text-xs text-muted-foreground">{e.updatedDate}</TableCell></TableRow>)}{d.emp.length === 0 && <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
         <TabsContent value="loans"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Amount</TableHead><TableHead>Bank</TableHead><TableHead>Rate</TableHead><TableHead>Tenure</TableHead><TableHead>EMI</TableHead><TableHead>Status</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.loans.map(l => <TableRow key={l.id} className="hover:bg-primary/5"><TableCell className="font-semibold">₹{l.loanAmount.toLocaleString()}</TableCell><TableCell>{l.bank}</TableCell><TableCell>{l.interestRate}%</TableCell><TableCell>{l.tenure} mo</TableCell><TableCell>₹{l.emi.toLocaleString()}</TableCell><TableCell><Badge className="rounded-full">{l.status}</Badge></TableCell><TableCell><ProofLink fileName={l.proofFileName} fileData={l.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{l.updatedDate}</TableCell></TableRow>)}{d.loans.length === 0 && <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
-        <TabsContent value="power"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Daily</TableHead><TableHead>Monthly</TableHead><TableHead>Source</TableHead><TableHead>Connection</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.power.map(p => <TableRow key={p.id} className="hover:bg-primary/5"><TableCell>{p.dailyUsage} kWh</TableCell><TableCell className="font-semibold">{p.monthlyUsage} kWh</TableCell><TableCell><Badge variant="outline" className="rounded-full">{p.powerSource}</Badge></TableCell><TableCell>{p.connectionNumber}</TableCell><TableCell><ProofLink fileName={p.proofFileName} fileData={p.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{p.updatedDate}</TableCell></TableRow>)}{d.power.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
-        <TabsContent value="water"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Daily (KL)</TableHead><TableHead>Monthly (KL)</TableHead><TableHead>Source</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.water.length ? d.water.map(w => <TableRow key={w.id} className="hover:bg-primary/5"><TableCell>{w.dailyUsage} KL</TableCell><TableCell className="font-semibold">{w.monthlyUsage} KL</TableCell><TableCell><Badge variant="outline" className="rounded-full">{w.waterSource}</Badge></TableCell><TableCell><ProofLink fileName={w.proofFileName} fileData={w.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{w.updatedDate}</TableCell></TableRow>) : <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
+        <TabsContent value="power"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Monthly</TableHead><TableHead>Yearly</TableHead><TableHead>Source</TableHead><TableHead>Connection</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.power.map(p => <TableRow key={p.id} className="hover:bg-primary/5"><TableCell>{p.monthlyUsage} kWh</TableCell><TableCell className="font-semibold">{p.yearlyUsage} kWh</TableCell><TableCell><Badge variant="outline" className="rounded-full">{p.powerSource}</Badge></TableCell><TableCell>{p.connectionNumber}</TableCell><TableCell><ProofLink fileName={p.proofFileName} fileData={p.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{p.updatedDate}</TableCell></TableRow>)}{d.power.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
+        <TabsContent value="water"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Monthly (KL)</TableHead><TableHead>Yearly (KL)</TableHead><TableHead>Source</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.water.length ? d.water.map(w => <TableRow key={w.id} className="hover:bg-primary/5"><TableCell>{w.monthlyUsage} KL</TableCell><TableCell className="font-semibold">{w.yearlyUsage} KL</TableCell><TableCell><Badge variant="outline" className="rounded-full">{w.waterSource}</Badge></TableCell><TableCell><ProofLink fileName={w.proofFileName} fileData={w.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{w.updatedDate}</TableCell></TableRow>) : <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
         <TabsContent value="turnover"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Monthly</TableHead><TableHead>Annual</TableHead><TableHead>FY</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.turn.map(t => <TableRow key={t.id} className="hover:bg-primary/5"><TableCell>₹{t.monthlyTurnover.toLocaleString()}</TableCell><TableCell className="font-semibold">₹{t.annualTurnover.toLocaleString()}</TableCell><TableCell>{t.financialYear}</TableCell><TableCell><ProofLink fileName={t.proofFileName} fileData={t.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{t.updatedDate}</TableCell></TableRow>)}{d.turn.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
         <TabsContent value="csr"><Card className="border-0 shadow-md"><CardContent className="pt-4"><Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Activity</TableHead><TableHead>Amount</TableHead><TableHead>Location</TableHead><TableHead>Date</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader><TableBody>{d.csr.map(c => <TableRow key={c.id} className="hover:bg-primary/5"><TableCell>{c.activityName}</TableCell><TableCell className="font-semibold">₹{c.amountSpent.toLocaleString()}</TableCell><TableCell>{c.location}</TableCell><TableCell>{c.activityDate}</TableCell><TableCell><ProofLink fileName={c.proofFileName} fileData={c.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{c.updatedDate}</TableCell></TableRow>)}{d.csr.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table></CardContent></Card></TabsContent>
       </Tabs>
@@ -145,49 +145,45 @@ const SuperAdmin = () => {
   };
 
   const generateReport = async () => {
-  toast.info("Generating report...");
-  
-  // Fetch all industry details fresh from the API
-  const allDetails: Record<string, { inv: Investment[]; emp: Employee[]; loans: TermLoan[]; power: PowerUsage[]; turn: Turnover[]; csr: CSR[]; water: WaterUsage[] }> = {};
-  
-  await Promise.all(
-    allIndustries.map(async (ind) => {
-      const [inv, emp, loans, power, turn, csr, water] = await Promise.all([
-        investments.getByIndustry(ind.id),
-        employees.getByIndustry(ind.id),
-        termLoans.getByIndustry(ind.id),
-        powerUsages.getByIndustry(ind.id),
-        turnovers.getByIndustry(ind.id),
-        csrEntries.getByIndustry(ind.id),
-        waterUsages.getByIndustry(ind.id),
-      ]);
-      allDetails[ind.id] = { inv, emp, loans, power, turn, csr, water };
-    })
-  );
+    toast.info("Generating report...");
+    const allDetails: Record<string, { inv: Investment[]; emp: Employee[]; loans: TermLoan[]; power: PowerUsage[]; turn: Turnover[]; csr: CSR[]; water: WaterUsage[] }> = {};
+    await Promise.all(
+      allIndustries.map(async (ind) => {
+        const [inv, emp, loans, power, turn, csr, water] = await Promise.all([
+          investments.getByIndustry(ind.id),
+          employees.getByIndustry(ind.id),
+          termLoans.getByIndustry(ind.id),
+          powerUsages.getByIndustry(ind.id),
+          turnovers.getByIndustry(ind.id),
+          csrEntries.getByIndustry(ind.id),
+          waterUsages.getByIndustry(ind.id),
+        ]);
+        allDetails[ind.id] = { inv, emp, loans, power, turn, csr, water };
+      })
+    );
 
-  let csv = "District,SIPCOT,Industry,Total Investment,Employees,Loan Details,Power (Monthly kWh),Water Monthly (KL),Annual Turnover,CSR Spent\n";
-  districts.forEach(d => {
-    allSipcots.filter(s => s.district === d).forEach(s => {
-      allIndustries.filter(i => i.sipcotId === s.id).forEach(ind => {
-        const dd = allDetails[ind.id];
-        if (!dd) return;
-        const latestInv = dd.inv[dd.inv.length - 1];
-        const latestEmp = dd.emp[dd.emp.length - 1];
-        const latestLoan = dd.loans[dd.loans.length - 1];
-        const latestTurn = dd.turn[dd.turn.length - 1];
-        const latestPower = dd.power[dd.power.length - 1];
-        const latestCSR = dd.csr[dd.csr.length - 1];
-        const latestWater = dd.water[dd.water.length - 1];
-        csv += `${d},${s.name},${ind.name},${latestInv?.totalAmount||0},${latestEmp?(latestEmp.male+latestEmp.female):0},"${latestLoan?`${latestLoan.loanAmount} - ${latestLoan.bank}`:'None'}",${latestPower?.monthlyUsage||0},${latestWater?.monthlyUsage||0},${latestTurn?.annualTurnover||0},${latestCSR?.amountSpent||0}\n`;
+    let csv = "District,SIPCOT,Industry,Total Investment,Employees,Loan Details,Power (Yearly kWh),Water Yearly (KL),Annual Turnover,CSR Spent\n";
+    districts.forEach(d => {
+      allSipcots.filter(s => s.district === d).forEach(s => {
+        allIndustries.filter(i => i.sipcotId === s.id).forEach(ind => {
+          const dd = allDetails[ind.id];
+          if (!dd) return;
+          const latestInv = dd.inv[dd.inv.length - 1];
+          const latestEmp = dd.emp[dd.emp.length - 1];
+          const latestLoan = dd.loans[dd.loans.length - 1];
+          const latestTurn = dd.turn[dd.turn.length - 1];
+          const latestPower = dd.power[dd.power.length - 1];
+          const latestCSR = dd.csr[dd.csr.length - 1];
+          const latestWater = dd.water[dd.water.length - 1];
+          csv += `${d},${s.name},${ind.name},${latestInv?.totalAmount||0},${latestEmp?(latestEmp.male+latestEmp.female):0},"${latestLoan?`${latestLoan.loanAmount} - ${latestLoan.bank}`:'None'}",${latestPower?.yearlyUsage||0},${latestWater?.yearlyUsage||0},${latestTurn?.annualTurnover||0},${latestCSR?.amountSpent||0}\n`;
+        });
       });
     });
-  });
-  const blob = new Blob([csv], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = "district_wise_report.csv"; a.click();
-  toast.success("Report downloaded!");
-};
-
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = "district_wise_report.csv"; a.click();
+    toast.success("Report downloaded!");
+  };
 
   return (
     <DashboardLayout

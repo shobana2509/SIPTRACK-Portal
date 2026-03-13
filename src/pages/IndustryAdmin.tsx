@@ -45,8 +45,8 @@ const IndustryAdmin = () => {
   const [loanFile, setLoanFile] = useState<File | undefined>();
   const [loanProofName, setLoanProofName] = useState("");
 
-  const [powerDaily, setPowerDaily] = useState("");
   const [powerMonthly, setPowerMonthly] = useState("");
+  const [powerYearly, setPowerYearly] = useState("");
   const [powerSource, setPowerSource] = useState<"TNEB" | "Generator" | "Solar">("TNEB");
   const [powerConn, setPowerConn] = useState("");
   const [powerFile, setPowerFile] = useState<File | undefined>();
@@ -130,10 +130,10 @@ const IndustryAdmin = () => {
   };
 
   const addPower = async () => {
-    if (!powerDaily) { toast.error("Fill power usage"); return; }
-    await powerUsages.add({ industryId, dailyUsage: Number(powerDaily), monthlyUsage: Number(powerMonthly), powerSource, connectionNumber: powerConn, proofFileName: powerProofName || undefined, updatedDate: today } as any, powerFile);
+    if (!powerMonthly) { toast.error("Fill power usage"); return; }
+    await powerUsages.add({ industryId, monthlyUsage: Number(powerMonthly), yearlyUsage: Number(powerYearly), powerSource, connectionNumber: powerConn, proofFileName: powerProofName || undefined, updatedDate: today } as any, powerFile);
     toast.success("Power usage added!");
-    setPowerDaily(""); setPowerMonthly(""); setPowerConn(""); setPowerProofName(""); setPowerFile(undefined);
+    setPowerMonthly(""); setPowerYearly(""); setPowerConn(""); setPowerProofName(""); setPowerFile(undefined);
     if (powerFileRef.current) powerFileRef.current.value = "";
     loadData();
   };
@@ -322,8 +322,8 @@ const IndustryAdmin = () => {
               <CardHeader><CardTitle className="text-lg flex items-center gap-2"><Zap className="h-5 w-5 text-warning" />Add Power Usage</CardTitle></CardHeader>
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-2">
-                  <div><Label>Daily Usage (kWh)</Label><Input type="number" value={powerDaily} onChange={e => setPowerDaily(e.target.value)} onWheel={preventScrollChange} className="bg-background" /></div>
                   <div><Label>Monthly Usage (kWh)</Label><Input type="number" value={powerMonthly} onChange={e => setPowerMonthly(e.target.value)} onWheel={preventScrollChange} className="bg-background" /></div>
+                  <div><Label>Yearly Usage (kWh)</Label><Input type="number" value={powerYearly} onChange={e => setPowerYearly(e.target.value)} onWheel={preventScrollChange} className="bg-background" /></div>
                 </div>
                 <div>
                   <Label>Power Source</Label>
@@ -340,8 +340,8 @@ const IndustryAdmin = () => {
             <Card className="border-0 shadow-md">
               <CardHeader><CardTitle className="text-lg">Power Records</CardTitle></CardHeader>
               <CardContent>
-                <Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Daily</TableHead><TableHead>Monthly</TableHead><TableHead>Source</TableHead><TableHead>Conn #</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader>
-                  <TableBody>{power.map(p => <TableRow key={p.id} className="hover:bg-primary/5"><TableCell>{p.dailyUsage} kWh</TableCell><TableCell className="font-semibold">{p.monthlyUsage} kWh</TableCell><TableCell><Badge variant="outline" className="rounded-full">{p.powerSource}</Badge></TableCell><TableCell>{p.connectionNumber}</TableCell><TableCell><ProofBadge fileName={p.proofFileName} fileData={p.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{p.updatedDate}</TableCell></TableRow>)}{power.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No records</TableCell></TableRow>}</TableBody></Table>
+                <Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Monthly</TableHead><TableHead>Yearly</TableHead><TableHead>Source</TableHead><TableHead>Conn #</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader>
+                  <TableBody>{power.map(p => <TableRow key={p.id} className="hover:bg-primary/5"><TableCell>{p.monthlyUsage} kWh</TableCell><TableCell className="font-semibold">{p.yearlyUsage} kWh</TableCell><TableCell><Badge variant="outline" className="rounded-full">{p.powerSource}</Badge></TableCell><TableCell>{p.connectionNumber}</TableCell><TableCell><ProofBadge fileName={p.proofFileName} fileData={p.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{p.updatedDate}</TableCell></TableRow>)}{power.length === 0 && <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No records</TableCell></TableRow>}</TableBody></Table>
               </CardContent>
             </Card>
           </div>

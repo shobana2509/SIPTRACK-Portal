@@ -78,8 +78,8 @@ CREATE TABLE IF NOT EXISTS term_loans (
 CREATE TABLE IF NOT EXISTS power_usages (
     id VARCHAR(36) PRIMARY KEY,
     industry_id VARCHAR(36) NOT NULL,
-    daily_usage DECIMAL(10, 2) NOT NULL DEFAULT 0,
     monthly_usage DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    yearly_usage DECIMAL(10, 2) NOT NULL DEFAULT 0,
     power_source ENUM('TNEB', 'Generator', 'Solar') NOT NULL,
     connection_number VARCHAR(100) DEFAULT '',
     proof_file_name VARCHAR(255) DEFAULT NULL,
@@ -87,6 +87,7 @@ CREATE TABLE IF NOT EXISTS power_usages (
     updated_date VARCHAR(20) NOT NULL,
     FOREIGN KEY (industry_id) REFERENCES industries (id) ON DELETE CASCADE
 );
+
 
 -- Turnovers table
 CREATE TABLE IF NOT EXISTS turnovers (
@@ -120,14 +121,15 @@ CREATE TABLE IF NOT EXISTS csr_entries (
 CREATE TABLE IF NOT EXISTS water_usages (
     id VARCHAR(36) PRIMARY KEY,
     industry_id VARCHAR(36) NOT NULL,
-    daily_usage DECIMAL(10, 2) NOT NULL DEFAULT 0,
     monthly_usage DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    yearly_usage DECIMAL(10, 2) NOT NULL DEFAULT 0,
     water_source ENUM('SIPCOT', 'Borewell', 'Both') NOT NULL,
     proof_file_name VARCHAR(255) DEFAULT NULL,
     proof_file_path VARCHAR(500) DEFAULT NULL,
     updated_date VARCHAR(20) NOT NULL,
     FOREIGN KEY (industry_id) REFERENCES industries (id) ON DELETE CASCADE
 );
+
 
 -- Insert default data
 INSERT IGNORE INTO

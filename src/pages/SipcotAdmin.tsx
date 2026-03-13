@@ -24,8 +24,8 @@ const SipcotAdmin = () => {
   const [selectedIndustry, setSelectedIndustry] = useState<Industry | null>(null);
   const today = new Date().toISOString().split("T")[0];
 
-  const [waterDaily, setWaterDaily] = useState("");
   const [waterMonthly, setWaterMonthly] = useState("");
+  const [waterYearly, setWaterYearly] = useState("");
   const [waterSource, setWaterSource] = useState<"SIPCOT" | "Borewell" | "Both">("SIPCOT");
   const [waterFile, setWaterFile] = useState<File | undefined>();
   const [waterProofName, setWaterProofName] = useState("");
@@ -62,7 +62,6 @@ const SipcotAdmin = () => {
     if (selectedIndustry) loadIndustryDetails(selectedIndustry.id);
   }, [selectedIndustry, loadIndustryDetails]);
 
-  // Load summary data for industry cards
   useEffect(() => {
     industriesList.forEach(ind => {
       if (!detailData[ind.id]) loadIndustryDetails(ind.id);
@@ -72,16 +71,16 @@ const SipcotAdmin = () => {
   if (!user || user.role !== "sipcot_admin") return <Navigate to="/" />;
 
   const addWater = async (industryId: string) => {
-    if (!waterDaily) { toast.error("Fill water usage"); return; }
-    await waterUsages.add({ industryId, dailyUsage: Number(waterDaily), monthlyUsage: Number(waterMonthly), waterSource, proofFileName: waterProofName || undefined, updatedDate: today } as any, waterFile);
+    if (!waterMonthly) { toast.error("Fill water usage"); return; }
+    await waterUsages.add({ industryId, monthlyUsage: Number(waterMonthly), yearlyUsage: Number(waterYearly), waterSource, proofFileName: waterProofName || undefined, updatedDate: today } as any, waterFile);
     toast.success("Water usage added!");
-    setWaterDaily(""); setWaterMonthly(""); setWaterProofName(""); setWaterFile(undefined);
+    setWaterMonthly(""); setWaterYearly(""); setWaterProofName(""); setWaterFile(undefined);
     if (waterFileRef.current) waterFileRef.current.value = "";
     loadIndustryDetails(industryId);
   };
 
   const generateReport = async () => {
-    let csv = `SIPCOT Report: ${sipcot?.name || ""}\n\nIndustry,Total Investment,Employees,Loan Details,Power (Monthly kWh),Water Monthly (KL),Annual Turnover,CSR Spent\n`;
+    let csv = `SIPCOT Report: ${sipcot?.name || ""}\n\nIndustry,Total Investment,Employees,Loan Details,Power (Yearly kWh),Water Yearly (KL),Annual Turnover,CSR Spent\n`;
     for (const ind of industriesList) {
       const d = detailData[ind.id];
       if (!d) continue;
@@ -92,7 +91,7 @@ const SipcotAdmin = () => {
       const latestPower = d.power[d.power.length - 1];
       const latestWater = d.water[d.water.length - 1];
       const latestCSR = d.csr[d.csr.length - 1];
-      csv += `${ind.name},${latestInv?.totalAmount||0},${latestEmp?(latestEmp.male+latestEmp.female):0},"${latestLoan?`${latestLoan.loanAmount} - ${latestLoan.bank}`:'None'}",${latestPower?.monthlyUsage||0},${latestWater?.monthlyUsage||0},${latestTurn?.annualTurnover||0},${latestCSR?.amountSpent||0}\n`;
+      csv += `${ind.name},${latestInv?.totalAmount||0},${latestEmp?(latestEmp.male+latestEmp.female):0},"${latestLoan?`${latestLoan.loanAmount} - ${latestLoan.bank}`:'None'}",${latestPower?.yearlyUsage||0},${latestWater?.yearlyUsage||0},${latestTurn?.annualTurnover||0},${latestCSR?.amountSpent||0}\n`;
     }
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -120,10 +119,10 @@ const SipcotAdmin = () => {
     html += latestEmp ? `<tr><td>${latestEmp.male}</td><td>${latestEmp.female}</td><td>${latestEmp.updatedDate}</td></tr>` : `<tr><td colspan="3">No data</td></tr>`;
     html += `</table><h3>Loan</h3><table><tr><th>Amount</th><th>Bank</th><th>Rate</th><th>Tenure</th><th>EMI</th><th>Status</th><th>Updated</th></tr>`;
     html += latestLoan ? `<tr><td>${latestLoan.loanAmount}</td><td>${latestLoan.bank}</td><td>${latestLoan.interestRate}%</td><td>${latestLoan.tenure} mo</td><td>${latestLoan.emi}</td><td>${latestLoan.status}</td><td>${latestLoan.updatedDate}</td></tr>` : `<tr><td colspan="7">No data</td></tr>`;
-    html += `</table><h3>Power</h3><table><tr><th>Daily</th><th>Monthly</th><th>Source</th><th>Connection</th><th>Updated</th></tr>`;
-    html += latestPower ? `<tr><td>${latestPower.dailyUsage}</td><td>${latestPower.monthlyUsage}</td><td>${latestPower.powerSource}</td><td>${latestPower.connectionNumber}</td><td>${latestPower.updatedDate}</td></tr>` : `<tr><td colspan="5">No data</td></tr>`;
-    html += `</table><h3>Water</h3><table><tr><th>Daily (KL)</th><th>Monthly (KL)</th><th>Source</th><th>Updated</th></tr>`;
-    html += latestWater ? `<tr><td>${latestWater.dailyUsage}</td><td>${latestWater.monthlyUsage}</td><td>${latestWater.waterSource}</td><td>${latestWater.updatedDate}</td></tr>` : `<tr><td colspan="4">No data</td></tr>`;
+    html += `</table><h3>Power</h3><table><tr><th>Monthly</th><th>Yearly</th><th>Source</th><th>Connection</th><th>Updated</th></tr>`;
+    html += latestPower ? `<tr><td>${latestPower.monthlyUsage}</td><td>${latestPower.yearlyUsage}</td><td>${latestPower.powerSource}</td><td>${latestPower.connectionNumber}</td><td>${latestPower.updatedDate}</td></tr>` : `<tr><td colspan="5">No data</td></tr>`;
+    html += `</table><h3>Water</h3><table><tr><th>Monthly (KL)</th><th>Yearly (KL)</th><th>Source</th><th>Updated</th></tr>`;
+    html += latestWater ? `<tr><td>${latestWater.monthlyUsage}</td><td>${latestWater.yearlyUsage}</td><td>${latestWater.waterSource}</td><td>${latestWater.updatedDate}</td></tr>` : `<tr><td colspan="4">No data</td></tr>`;
     html += `</table><h3>Turnover</h3><table><tr><th>Monthly</th><th>Annual</th><th>FY</th><th>Updated</th></tr>`;
     html += latestTurn ? `<tr><td>${latestTurn.monthlyTurnover}</td><td>${latestTurn.annualTurnover}</td><td>${latestTurn.financialYear}</td><td>${latestTurn.updatedDate}</td></tr>` : `<tr><td colspan="4">No data</td></tr>`;
     html += `</table><h3>CSR</h3><table><tr><th>Activity</th><th>Amount</th><th>Location</th><th>Date</th><th>Updated</th></tr>`;
@@ -191,8 +190,8 @@ const SipcotAdmin = () => {
 
         <TabsContent value="power">
           <Card className="border-0 shadow-md"><CardContent className="pt-4">
-            <Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Daily</TableHead><TableHead>Monthly</TableHead><TableHead>Source</TableHead><TableHead>Connection</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader>
-              <TableBody>{d.power.length ? d.power.map(p => <TableRow key={p.id} className="hover:bg-primary/5"><TableCell>{p.dailyUsage} kWh</TableCell><TableCell className="font-semibold">{p.monthlyUsage} kWh</TableCell><TableCell><Badge variant="outline" className="rounded-full">{p.powerSource}</Badge></TableCell><TableCell>{p.connectionNumber}</TableCell><TableCell><ProofLink fileName={p.proofFileName} fileData={p.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{p.updatedDate}</TableCell></TableRow>) : <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table>
+            <Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Monthly</TableHead><TableHead>Yearly</TableHead><TableHead>Source</TableHead><TableHead>Connection</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader>
+              <TableBody>{d.power.length ? d.power.map(p => <TableRow key={p.id} className="hover:bg-primary/5"><TableCell>{p.monthlyUsage} kWh</TableCell><TableCell className="font-semibold">{p.yearlyUsage} kWh</TableCell><TableCell><Badge variant="outline" className="rounded-full">{p.powerSource}</Badge></TableCell><TableCell>{p.connectionNumber}</TableCell><TableCell><ProofLink fileName={p.proofFileName} fileData={p.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{p.updatedDate}</TableCell></TableRow>) : <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table>
           </CardContent></Card>
         </TabsContent>
 
@@ -202,8 +201,8 @@ const SipcotAdmin = () => {
               <CardHeader><CardTitle className="text-lg flex items-center gap-2"><Droplets className="h-5 w-5 text-info" />Add Water Consumption</CardTitle></CardHeader>
               <CardContent className="space-y-3">
                 <div className="grid grid-cols-2 gap-2">
-                  <div><Label>Daily Usage (KL)</Label><Input type="number" value={waterDaily} onChange={e => setWaterDaily(e.target.value)} placeholder="0" className="bg-background" /></div>
                   <div><Label>Monthly Usage (KL)</Label><Input type="number" value={waterMonthly} onChange={e => setWaterMonthly(e.target.value)} placeholder="0" className="bg-background" /></div>
+                  <div><Label>Yearly Usage (KL)</Label><Input type="number" value={waterYearly} onChange={e => setWaterYearly(e.target.value)} placeholder="0" className="bg-background" /></div>
                 </div>
                 <div>
                   <Label>Water Source</Label>
@@ -227,8 +226,8 @@ const SipcotAdmin = () => {
             <Card className="border-0 shadow-md">
               <CardHeader><CardTitle className="text-lg">Water Records</CardTitle></CardHeader>
               <CardContent>
-                <Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Daily (KL)</TableHead><TableHead>Monthly (KL)</TableHead><TableHead>Source</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader>
-                  <TableBody>{d.water.length ? d.water.map(w => <TableRow key={w.id} className="hover:bg-primary/5"><TableCell>{w.dailyUsage} KL</TableCell><TableCell className="font-semibold">{w.monthlyUsage} KL</TableCell><TableCell><Badge variant="outline" className="rounded-full">{w.waterSource}</Badge></TableCell><TableCell><ProofLink fileName={w.proofFileName} fileData={w.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{w.updatedDate}</TableCell></TableRow>) : <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table>
+                <Table><TableHeader><TableRow className="bg-muted/30"><TableHead>Monthly (KL)</TableHead><TableHead>Yearly (KL)</TableHead><TableHead>Source</TableHead><TableHead>Proof</TableHead><TableHead>Updated</TableHead></TableRow></TableHeader>
+                  <TableBody>{d.water.length ? d.water.map(w => <TableRow key={w.id} className="hover:bg-primary/5"><TableCell>{w.monthlyUsage} KL</TableCell><TableCell className="font-semibold">{w.yearlyUsage} KL</TableCell><TableCell><Badge variant="outline" className="rounded-full">{w.waterSource}</Badge></TableCell><TableCell><ProofLink fileName={w.proofFileName} fileData={w.proofFileData} /></TableCell><TableCell className="text-xs text-muted-foreground">{w.updatedDate}</TableCell></TableRow>) : <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">No data</TableCell></TableRow>}</TableBody></Table>
               </CardContent>
             </Card>
           </div>
