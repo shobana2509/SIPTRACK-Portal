@@ -1,5 +1,5 @@
 // API-based data store (replaces localStorage)
-import { apiGet, apiPost, apiPostWithFile, apiDelete } from './api';
+import { apiGet, apiPost, apiPostWithFile, apiDelete, apiPut } from './api';
 
 export interface User {
   id: string;
@@ -15,12 +15,15 @@ export interface SIPCOT {
   id: string;
   name: string;
   district: string;
+  submissionDeadline?: string;
+  deadlineSetDate?: string;
 }
 
 export interface Industry {
   id: string;
   name: string;
   sipcotId: string;
+  hasUnseenVerified?: boolean;
 }
 
 export interface Investment {
@@ -32,6 +35,8 @@ export interface Investment {
   proofFileName?: string;
   proofFileData?: string;
   updatedDate: string;
+  verificationStatus: "pending" | "verified";
+  isSuperAdminSeen: boolean;
 }
 
 export interface Employee {
@@ -42,6 +47,8 @@ export interface Employee {
   proofFileName?: string;
   proofFileData?: string;
   updatedDate: string;
+  verificationStatus: "pending" | "verified";
+  isSuperAdminSeen: boolean;
 }
 
 export interface TermLoan {
@@ -56,29 +63,34 @@ export interface TermLoan {
   proofFileName?: string;
   proofFileData?: string;
   updatedDate: string;
+  verificationStatus: "pending" | "verified";
+  isSuperAdminSeen: boolean;
 }
 
 export interface PowerUsage {
   id: string;
   industryId: string;
   monthlyUsage: number;
-  yearlyUsage: number;
   powerSource: "TNEB" | "Generator" | "Solar";
   connectionNumber: string;
   proofFileName?: string;
   proofFileData?: string;
   updatedDate: string;
+  verificationStatus: "pending" | "verified";
+  isSuperAdminSeen: boolean;
 }
 
 export interface Turnover {
   id: string;
   industryId: string;
   monthlyTurnover: number;
-  annualTurnover: number;
   financialYear: string;
+  turnoverDate: string;
   proofFileName?: string;
   proofFileData?: string;
   updatedDate: string;
+  verificationStatus: "pending" | "verified";
+  isSuperAdminSeen: boolean;
 }
 
 export interface CSR {
@@ -92,18 +104,99 @@ export interface CSR {
   proofFileName?: string;
   proofFileData?: string;
   updatedDate: string;
+  verificationStatus: "pending" | "verified";
+  isSuperAdminSeen: boolean;
 }
 
 export interface WaterUsage {
   id: string;
   industryId: string;
   monthlyUsage: number;
-  yearlyUsage: number;
   waterSource: "SIPCOT" | "Borewell" | "Both";
   proofFileName?: string;
   proofFileData?: string;
   updatedDate: string;
+  verificationStatus: "pending" | "verified";
+  isSuperAdminSeen: boolean;
 }
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  industryId: string;
+  message: string;
+  timestamp: string;
+  isDeletedForEveryone: boolean;
+  deletedBySender: boolean;
+  deletedByReceiver: boolean;
+  isRead: boolean;
+}
+
+export interface ActivityLog {
+  timestamp: string;
+}
+
+export interface SipcotComparison {
+  id: string;
+  name: string;
+  totalInvestments: number;
+  totalTurnover: number;
+  totalPowerUsage: number;
+  totalEmployees: number;
+  totalWaterUsage: number;
+  totalCsr: number;
+  totalLoans: number;
+}
+
+export interface UsageEfficiency {
+  id: string;
+  name: string;
+  sipcotName: string;
+  powerUsage: number;
+  waterUsage: number;
+  avgPower: number;
+  avgWater: number;
+}
+
+export interface IndustryPerformance {
+  summary: { name: string; value: number; color: string }[];
+  classified: {
+    id: string;
+    name: string;
+    sipcotName: string;
+    investment: number;
+    turnover: number;
+    powerUsage: number;
+    waterUsage: number;
+    employees: number;
+    performance: "Excellent" | "Good" | "Average" | "Poor";
+    reason: string;
+    metrics: { 
+      roi: string; 
+      efficiency: string;
+      waterEfficiency: string;
+      debtRatio: string;
+      csrRatio: string;
+    };
+  }[];
+}
+
+export interface Anomaly {
+  id: string;
+  industryId: string;
+  dataType: "turnover" | "employees" | "power" | "water";
+  dataId: string;
+  oldValue: number;
+  newValue: number;
+  changePercentage: number;
+  explanation?: string;
+  aiValidation: "Valid Reason" | "Needs Review" | "Suspicious";
+  validationResult?: string;
+  status: "pending" | "resolved";
+  timestamp: string;
+}
+
 
 // No initialization needed - DB has default data via schema.sql
 export function initializeData() {
@@ -133,6 +226,10 @@ export async function getSIPCOTs(): Promise<SIPCOT[]> {
 
 export async function addSIPCOT(sipcot: Omit<SIPCOT, "id">): Promise<SIPCOT> {
   return apiPost<SIPCOT>('/sipcots', sipcot as Record<string, unknown>);
+}
+
+export async function setSipcotDeadline(sipcotId: string, deadline: string, senderId: string): Promise<{ success: boolean; deadline: string }> {
+  return apiPut<{ success: boolean; deadline: string }>(`/sipcots/${sipcotId}/deadline`, { deadline, senderId });
 }
 
 export async function getIndustries(): Promise<Industry[]> {
@@ -174,6 +271,12 @@ function createCRUD<T extends { id: string; industryId: string; updatedDate: str
       if (items.length === 0) return undefined;
       return items[items.length - 1];
     },
+    verify: async (id: string, status: 'verified' | 'pending' = 'verified'): Promise<void> => {
+      return apiPut<void>(`/verify/${routeName}/${id}`, { status });
+    },
+    getVerifiedByIndustry: async (industryId: string): Promise<T[]> => {
+      return apiGet<T[]>(`/${routeName}?industryId=${industryId}&verified=true`);
+    },
   };
 }
 
@@ -184,6 +287,61 @@ export const powerUsages = createCRUD<PowerUsage>('power-usages');
 export const turnovers = createCRUD<Turnover>('turnovers');
 export const csrEntries = createCRUD<CSR>('csr-entries');
 export const waterUsages = createCRUD<WaterUsage>('water-usages');
+
+const normalizeAnomaly = (a: any): Anomaly => ({
+  ...a,
+  oldValue: Number(a.oldValue),
+  newValue: Number(a.newValue),
+  changePercentage: Number(a.changePercentage),
+});
+
+export const anomalies = {
+  getByIndustry: async (industryId: string): Promise<Anomaly[]> => {
+    const raw = await apiGet<any[]>(`/anomalies?industryId=${industryId}`);
+    return raw.map(normalizeAnomaly);
+  },
+  getAll: async (): Promise<Anomaly[]> => {
+    const raw = await apiGet<any[]>('/anomalies');
+    return raw.map(normalizeAnomaly);
+  },
+  submitExplanation: async (id: string, explanation: string): Promise<{ success: boolean; validation: string; result: string }> => {
+    return apiPut<{ success: boolean; validation: string; result: string }>(`/anomalies/${id}/explain`, { explanation });
+  }
+};
+
+export const chat = {
+  getMessages: async (industryId: string): Promise<ChatMessage[]> => {
+    return apiGet<ChatMessage[]>(`/chat?industryId=${industryId}`);
+  },
+  sendMessage: async (msg: { senderId: string; receiverId: string; industryId: string; message: string }): Promise<ChatMessage> => {
+    return apiPost<ChatMessage>('/chat', msg as Record<string, unknown>);
+  },
+  deleteMessage: async (id: string, type: 'me' | 'everyone', userId: string): Promise<void> => {
+    return apiPut<void>(`/chat/${id}/delete`, { type, userId });
+  },
+  clearMessages: async (industryId: string, userId: string): Promise<void> => {
+    return apiPost<void>('/chat/clear', { industryId, userId });
+  },
+  markRead: async (industryId: string, userId: string): Promise<void> => {
+    return apiPost<void>('/chat/mark-read', { industryId, userId });
+  }
+};
+
+export async function getActivityLogs(): Promise<ActivityLog[]> {
+  return apiGet<ActivityLog[]>('/activity-logs');
+}
+
+export async function getSipcotComparison(): Promise<SipcotComparison[]> {
+  return apiGet<SipcotComparison[]>('/stats/sipcot-comparison');
+}
+
+export async function getUsageEfficiency(): Promise<UsageEfficiency[]> {
+  return apiGet<UsageEfficiency[]>('/stats/usage-efficiency');
+}
+
+export async function getIndustryPerformance(): Promise<IndustryPerformance> {
+  return apiGet<IndustryPerformance>('/stats/industry-performance');
+}
 
 export async function getDistricts(): Promise<string[]> {
   const sipcots = await getSIPCOTs();
@@ -238,4 +396,12 @@ export function openProofFile(proofFileData?: string, proofFileName?: string) {
   } catch {
     window.open(proofFileData, '_blank');
   }
-}
+};
+
+export const markAsSeen = async (industryId: string) => {
+  await apiPut(`/seen/${industryId}`, {});
+};
+
+export const verifyAll = async (industryId: string) => {
+  await apiPut(`/verify-all/${industryId}`, {});
+};

@@ -38,3 +38,13 @@ export async function apiDelete(endpoint: string): Promise<void> {
   const res = await fetch(`${API_BASE}${endpoint}`, { method: 'DELETE' });
   if (!res.ok) throw new Error(await res.text());
 }
+
+export async function apiPut<T>(endpoint: string, data: Record<string, unknown>): Promise<T> {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}

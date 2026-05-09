@@ -11,6 +11,8 @@ import LoginIndustryAdmin from "./pages/LoginIndustryAdmin";
 import SuperAdmin from "./pages/SuperAdmin";
 import SipcotAdmin from "./pages/SipcotAdmin";
 import IndustryAdmin from "./pages/IndustryAdmin";
+import ActivityLog from "./pages/ActivityLog";
+import SuperAdminAnalytics from "./pages/SuperAdminAnalytics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,7 +22,7 @@ const App = () => (
     <AuthProvider>
       <TooltipProvider>
         <Toaster />
-        <Sonner />
+        <Sonner position="top-right" />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
@@ -28,6 +30,8 @@ const App = () => (
             <Route path="/login/sipcot-admin" element={<LoginSipcotAdmin />} />
             <Route path="/login/industry-admin" element={<LoginIndustryAdmin />} />
             <Route path="/super-admin" element={<SuperAdmin />} />
+            <Route path="/super-admin/activity-log" element={<ActivityLog />} />
+            <Route path="/super-admin/analytics" element={<SuperAdminAnalytics />} />
             <Route path="/sipcot-admin" element={<SipcotAdmin />} />
             <Route path="/industry-admin" element={<IndustryAdmin />} />
             <Route path="*" element={<NotFound />} />
